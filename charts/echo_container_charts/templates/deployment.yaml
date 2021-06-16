@@ -1,0 +1,42 @@
+apiVersion: "apps/v1"
+kind: Deployment
+metadata:
+  name:  {{.Release.Name}}
+  labels: &labels
+    app: {{ .Release.Name}}
+    chart: {{ .Release.Name}}
+spec:
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      labels: *labels
+    spec:       
+      containers:
+        - name: {{.Release.Name}}
+          image: {{ .Values.image.name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: &service-port {{ .Values.service.service_port }}
+              name: service-port
+          readinessProbe:
+            httpGet:
+              path: "/rediness_probe"
+              port: *service-port
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: "/health"
+              port: *service-port
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+      terminationGracePeriodSeconds: 60

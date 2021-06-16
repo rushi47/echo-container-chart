@@ -1,0 +1,28 @@
+echo-container-chart:
+  imageTag: latest
+  image:
+    name: echo_container
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 0.2
+    limits:
+      memory: 200Gi
+      cpu: 0.4
+
+  autoscaling:
+    minReplicas: 1
+    maxReplicas: 2
+
+  service:
+    type: ClusterIP
+    service_port: 4747
+
+  ingress:
+    ingressClassName: "ingress-nginx"
+    domain: ""
+
+  podDisruptionBudget:
+    enabled: true

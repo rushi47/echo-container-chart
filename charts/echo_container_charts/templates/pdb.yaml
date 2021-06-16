@@ -1,0 +1,13 @@
+{{- if .Values.podDisruptionBudget.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}
+  labels: &labels
+    app: {{ .Release.Name }}
+    chart: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels: *labels
+  minAvailable: {{ sub .Values.autoscaling.minReplicas 1 }}
+{{- end -}}

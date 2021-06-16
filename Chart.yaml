@@ -1,0 +1,9 @@
+apiVersion: v1
+name: echo-container-chart
+version: 1.0.0
+description: Helm chart for echo-container
+maintainers:
+- name: Rushi
+  email: rushikeshbutley@gmail.com
+sources:
+- https://github.com/rushi47/echo-container.git
