@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Values.ingress.domain | trunc 63 | replace "." "-" | replace "*" "wildcard" }}
@@ -8,11 +8,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
+  ingressClassName: nginx-example
   rules:
-    - host: {{ required "Domain for ingress is required" (.Values.ingress.domain) }}
-      http:
-        paths:
-          - backend:
-              serviceName: {{.Release.Name}}
-              servicePort: {{ .Values.service.service_port }}
-            path: /
+  - host: {{ required "Domain for ingress is required" (.Values.ingress.domain) }}
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: {{.Release.Name}}
+            port:
+              number: {{ .Values.service.service_port }}
