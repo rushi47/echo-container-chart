@@ -8,7 +8,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.service_port }}
+    - port: {{ .Values.service.ingress_port }}
       targetPort: {{ .Values.service.service_port }}
       name: http-service-port
   selector: *labels
