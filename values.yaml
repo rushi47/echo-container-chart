@@ -1,7 +1,7 @@
 echo-container-chart:
   imageTag: latest
   image:
-    name: echo_container
+    name: rushib47/echo-container
     pullPolicy: IfNotPresent
 
   resources:
@@ -25,5 +25,8 @@ echo-container-chart:
     ingressClassName: "ingress-nginx"
     domain: ""
 
-  podDisruptionBudget:
+  config:
     enabled: true
+
+  podDisruptionBudget:
+    enabled: false

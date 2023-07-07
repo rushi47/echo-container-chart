@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels: *labels
-    spec:       
+    spec:
       containers:
         - name: {{.Release.Name}}
           image: {{ .Values.image.name }}
@@ -39,4 +39,28 @@ spec:
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 5
+          {{- if eq .Values.config.enabled true }}
+          #Mount configmap
+          # If the directory already exists mountpath needs to be specific till the
+          # end of file like /etc/svc.conf if svc.conf is file needs to be created
+          # if directory doesnt exists then simply specifying just mountpath with /-x-new-dir
+          # should work fine. And no need of subpath
+          # it will look something like
+          #- name: cfgmap-bc-svc
+          # mountPath: "/new-dir-to-create"
+          # subPath: name-of-file-which-will-be-created.conf
+          volumeMounts:
+          - name: cfgmap-bc-svc
+            mountPath: "/etc/svc.conf"
+            subPath: svc.conf
+          {{- end }}
       terminationGracePeriodSeconds: 60
+    {{- if eq .Values.config.enabled true }}
+      volumes:
+      - name: cfgmap-bc-svc
+        configMap:
+          name: {{ .Chart.Name }}-cfg
+          items:
+          - key: "svc.conf"
+            path: "svc.conf"
+    {{- end }}
